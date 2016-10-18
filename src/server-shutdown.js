@@ -1,11 +1,11 @@
 'use strict';
 
 const async = require('async');
-const debug = require('debug')('safe-shutdown');
+const debug = require('debug')('server-shutdown');
 
 function noop() { } // eslint-disable-line no-empty-function
 
-class SafeServerShutdown {
+class ServerShutdown {
 	constructor() {
 		this.sockets = new Set();
 		this.servers = new Set();
@@ -24,11 +24,11 @@ class SafeServerShutdown {
 		server.on('connection', this._serverConnectionHandler);
 	}
 
-	shutdown(force, done) {
+	shutdown(force, callback) {
 		debug('Starting shutdown');
 		if (typeof force === 'function') {
 			/* eslint-disable no-param-reassign */
-			done = force;
+			callback = force;
 			force = false;
 			/* eslint-enable no-param-reassign */
 		}
@@ -41,13 +41,13 @@ class SafeServerShutdown {
 		this.stopped = true;
 		async.parallel(tasks, () => {
 			debug('Shutdown complete');
-			(done || noop)();
+			(callback || noop)();
 		});
 	}
 
 	_serverConnectionHandler(socket) {
 		debug('Starting connection');
-		socket.safeServerShutdownIdle = true;
+		socket.serverShutdownIdle = true;
 		this.sockets.add(socket);
 		socket.on('close', () => {
 			debug('Connection ended');
@@ -57,10 +57,10 @@ class SafeServerShutdown {
 
 	_socketRequestHandler(req, res) {
 		debug('Starting request');
-		req.socket.safeServerShutdownIdle = false;
+		req.socket.serverShutdownIdle = false;
 		res.on('finish', () => {
 			debug('Finishing request');
-			req.socket.safeServerShutdownIdle = true;
+			req.socket.serverShutdownIdle = true;
 			if (this.stopped) {
 				this._destroySocket(req.socket);
 			}
@@ -75,11 +75,12 @@ class SafeServerShutdown {
 		}
 		const originalWrite = socket.write;
 
+		socket.serverShutdownWebSocket = true;
 		// overwrite the socket write function because there is not a start write event
 		socket.write = (data, encoding, callback) => {
-			socket.safeServerShutdownIdle = false;
+			socket.serverShutdownIdle = false;
 			return originalWrite.call(socket, data, encoding, () => {
-				socket.safeServerShutdownIdle = true;
+				socket.serverShutdownIdle = true;
 				if (this.stopped) {
 					this._destroySocket(req.socket);
 				}
@@ -91,7 +92,7 @@ class SafeServerShutdown {
 	_destroySockets(force, callback) {
 		debug('Destroying sockets');
 		for (const socket of this.sockets) {
-			if (force || socket.safeServerShutdownIdle) {
+			if (force || socket.serverShutdownIdle) {
 				this._destroySocket(socket);
 			}
 		}
@@ -106,4 +107,4 @@ class SafeServerShutdown {
 	}
 }
 
-module.exports = SafeServerShutdown;
+module.exports = ServerShutdown;
