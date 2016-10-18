@@ -1,0 +1,43 @@
+{
+  "name": "node-server-shutdown",
+  "version": "0.0.1",
+  "description": "Safely shutdown any number of HTTP and WebSocket servers in node",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=4.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mitmaro/node-safe-shutdown.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MitMaro/node-server-shutdown/issues"
+  },
+  "scripts": {
+    "test": "npm run test:unit:coverage && npm run lint",
+    "test:unit": "mocha",
+    "test:unit:coverage": "nyc mocha",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "http-server",
+    "http",
+    "graceful-shutdown"
+  ],
+  "author": "Tim Oram <mitmaro@gmail.com>",
+  "contributors": [],
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.1.1"
+  },
+  "devDependencies": {
+    "async": "^2.1.2",
+    "chai": "^3.5.0",
+    "eslint": "^3.8.1",
+    "eslint-config-mitmaro": "^2.0.0",
+    "eslint-plugin-strict-newline": "^1.2.0",
+    "mocha": "^3.1.2",
+    "nyc": "^8.3.1",
+    "request": "^2.75.0"
+  }
+}

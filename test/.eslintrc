@@ -1,0 +1,7 @@
+---
+extends: mitmaro/mocha
+rules:
+    func-names: off
+    no-undefined: off
+    max-nested-callbacks: off
+    prefer-reflect: off # not supported in node 4
