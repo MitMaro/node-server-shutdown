@@ -5,7 +5,8 @@
 	"branches": 100,
 	"reporter": [
 		"html",
-		"text-summary"
+		"text-summary",
+		"lcov"
 	],
 	"check-coverage": true,
 	"report-dir": "./coverage"
