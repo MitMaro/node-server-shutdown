@@ -1,14 +1,14 @@
 {
-  "name": "node-server-shutdown",
+  "name": "server-shutdown",
   "version": "0.0.1",
-  "description": "Safely shutdown any number of HTTP and WebSocket servers in node",
+  "description": "Gracefully shutdown any number of HTTP and WebSocket servers in node",
   "main": "src/index.js",
   "engines": {
     "node": ">=4.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mitmaro/node-safe-shutdown.git"
+    "url": "https://github.com/mitmaro/node-server-shutdown.git"
   },
   "bugs": {
     "url": "https://github.com/MitMaro/node-server-shutdown/issues"
@@ -23,7 +23,10 @@
   "keywords": [
     "http-server",
     "http",
-    "graceful-shutdown"
+    "graceful-shutdown",
+    "graceful",
+    "shutdown",
+    "websockets"
   ],
   "author": "Tim Oram <mitmaro@gmail.com>",
   "contributors": [],

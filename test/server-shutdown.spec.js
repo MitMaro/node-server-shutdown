@@ -2,7 +2,7 @@
 
 const http = require('http');
 const expect = require('chai').expect;
-const SafeServerShutdown = require('../src/');
+const ServerShutdown = require('../src/');
 
 // monkey patch http server so that we have server.listening in Node 4
 if (typeof Object.getPrototypeOf(http.Server.prototype).listening === 'undefined') {
@@ -16,7 +16,7 @@ if (typeof Object.getPrototypeOf(http.Server.prototype).listening === 'undefined
 	});
 }
 
-describe('SafeServerShutdown', function() {
+describe('ServerShutdown', function() {
 	let clientDone = false;
 	let shutdownDone = false;
 	let server;
@@ -32,7 +32,7 @@ describe('SafeServerShutdown', function() {
 	beforeEach(function() {
 		clientDone = false;
 		shutdownDone = false;
-		serverManager = new SafeServerShutdown();
+		serverManager = new ServerShutdown();
 		server = http.createServer();
 		serverManager.registerServer(server);
 		server.listen(0, () => {
@@ -217,7 +217,7 @@ describe('SafeServerShutdown', function() {
 
 		function acceptUpgrade() {
 			expect(serverManager.sockets.size).to.equal(1);
-			expect(serverManager.sockets.values().next().value).to.not.have.property('_safeServerShutdownWebSocket');
+			expect(serverManager.sockets.values().next().value).to.not.have.property('serverShutdownWebSocket');
 			setImmediate(serverManager.shutdown.bind(serverManager));
 			clientDone = true;
 			checkDone(done);

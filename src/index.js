@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./safe-server-shutdown');
+module.exports = require('./server-shutdown');
