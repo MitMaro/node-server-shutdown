@@ -1,0 +1,8 @@
+.nyc_output/
+test/
+coverage/
+.eslintignore
+.eslintrc
+.nycrc
+.travis.yml
+server-shutdown-*.tgz

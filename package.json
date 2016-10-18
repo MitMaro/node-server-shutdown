@@ -1,6 +1,6 @@
 {
   "name": "server-shutdown",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Gracefully shutdown any number of HTTP and WebSocket servers in node",
   "main": "src/index.js",
   "engines": {
