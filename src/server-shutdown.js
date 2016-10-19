@@ -3,8 +3,9 @@
 const async = require('async');
 const debug = require('debug')('server-shutdown');
 
-function noop() { } // eslint-disable-line no-empty-function
-
+function noop() {
+	// this function does nothing
+}
 class ServerShutdown {
 	constructor() {
 		this.sockets = new Set();
@@ -102,7 +103,8 @@ class ServerShutdown {
 
 	_destroySocket(socket) {
 		debug('Destroying socket');
-		socket.destroy();
+		// Some sockets use close (engine.io), Node.js uses destroy
+		(socket.destroy || socket.close).call(socket);
 		this.sockets.delete(socket);
 	}
 }

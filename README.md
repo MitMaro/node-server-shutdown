@@ -3,7 +3,7 @@
 [![Dependency Status](https://david-dm.org/MitMaro/node-server-shutdown.svg)](https://david-dm.org/MitMaro/node-server-shutdown)
 [![Build Status](https://travis-ci.org/MitMaro/node-server-shutdown.svg?branch=master)](https://travis-ci.org/MitMaro/node-server-shutdown)
 [![Coverage Status](https://coveralls.io/repos/github/MitMaro/node-server-shutdown/badge.svg?branch=master)](https://coveralls.io/github/MitMaro/node-server-shutdown?branch=master)
-[![NPM version](https://img.shields.io/npm/v/node-server-shutdown.svg)](https://www.npmjs.com/package/node-server-shutdown)
+[![NPM version](https://img.shields.io/npm/v/server-shutdown.svg)](https://www.npmjs.com/package/server-shutdown)
 [![GitHub license](https://img.shields.io/badge/license-ISC-blue.svg)](https://raw.githubusercontent.com/MitMaro/node-server-shutdown/master/LICENSE.md)
 
 Using just [`server.close`][1] only terminates the server once every connection is closed. This is problematic since,
@@ -45,13 +45,20 @@ closing WebSocket connections on finish of a write.
         })
     }));
 
+## Adding Socket.io
+
+    // continuing from basic uasge
+    const socketio = require('socket.io');
+    const io = socketio(httpServer);
+    serverShutdown.registerServer(io.engine);
+
 ## API
 
-### `registerServer(server)`
+### `ServerShutdown.registerServer(server)`
 
 Registers a server with the library.
 
-### `shutdown([force = false][, callback])`
+### `ServerShutdown.shutdown([force = false][, callback])`
 
 Shutdown all the servers registered. If the optional `force` flag is provided and true all connections
 are forecfully disconnected. The `callback` is called once all connections are disconnected and servers

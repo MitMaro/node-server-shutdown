@@ -47,6 +47,23 @@ describe('ServerShutdown', function() {
 		}));
 	});
 
+	it('should shutdown with socket with close function and not destroy', function(done) {
+		let wasCalled = false;
+
+		serverManager._serverConnectionHandler({ // eslint-disable-line no-underscore-dangle
+			on() {
+				// pass
+			},
+			close() {
+				wasCalled = true;
+			}
+		});
+		setImmediate(serverManager.shutdown.bind(serverManager, () => {
+			expect(wasCalled).to.be.true;
+			done();
+		}));
+	});
+
 	it('should shutdown with active HTTP connection', function(done) {
 		function createRequest() {
 			const client = http.request({
