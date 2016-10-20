@@ -25,14 +25,8 @@ class ServerShutdown {
 		server.on('connection', this._serverConnectionHandler);
 	}
 
-	shutdown(force, callback) {
+	shutdown(callback = noop, force = false) {
 		debug('Starting shutdown');
-		if (typeof force === 'function') {
-			/* eslint-disable no-param-reassign */
-			callback = force;
-			force = false;
-			/* eslint-enable no-param-reassign */
-		}
 		const tasks = [];
 
 		for (const server of this.servers) {
@@ -42,7 +36,7 @@ class ServerShutdown {
 		this.stopped = true;
 		async.parallel(tasks, () => {
 			debug('Shutdown complete');
-			(callback || noop)();
+			callback();
 		});
 	}
 

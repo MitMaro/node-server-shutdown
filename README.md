@@ -58,7 +58,7 @@ closing WebSocket connections on finish of a write.
 
 Registers a server with the library.
 
-### `ServerShutdown.shutdown([force = false][, callback])`
+### `ServerShutdown.shutdown([callback = noop][, force = false])`
 
 Shutdown all the servers registered. If the optional `force` flag is provided and true all connections
 are forecfully disconnected. The `callback` is called once all connections are disconnected and servers
