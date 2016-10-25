@@ -2,27 +2,49 @@
 
 const async = require('async');
 const debug = require('debug')('server-shutdown');
+const httpAdapter = require('./adapter/http');
+const socketioAdapter = require('./adapter/socketio');
 
 function noop() {
 	// this function does nothing
 }
+
 class ServerShutdown {
 	constructor() {
 		this.sockets = new Set();
 		this.servers = new Set();
+		this.adapters = new Map();
 		this.stopped = false;
 		this._serverConnectionHandler = this._serverConnectionHandler.bind(this);
 		this._socketRequestHandler = this._socketRequestHandler.bind(this);
 		this._socketUpgradeHandler = this._socketUpgradeHandler.bind(this);
 		this._destroySockets = this._destroySockets.bind(this);
+
+		this.registerAdapter(ServerShutdown.Adapters.http, httpAdapter);
+		this.registerAdapter(ServerShutdown.Adapters.socketio, socketioAdapter);
 	}
 
-	registerServer(server) {
+	registerAdapter(name, adapter) {
+		this.adapters.set(name, adapter);
+	}
+
+	registerServer(server, adapterName) {
+		if (!adapterName) {
+			/* eslint-disable no-param-reassign */
+			adapterName = ServerShutdown.Adapters.http;
+			/* eslint-enable no-param-reassign */
+		}
+		if (!this.adapters.has(adapterName)) {
+			throw new Error(`The adapter, ${adapterName}, is not registered`);
+		}
 		debug('Added server');
+		const adapter = this.adapters.get(adapterName);
+
 		this.servers.add(server);
+		server.serverShutdownAdapter = adapter;
 		server.on('request', this._socketRequestHandler);
 		server.on('upgrade', this._socketUpgradeHandler);
-		server.on('connection', this._serverConnectionHandler);
+		server.on('connection', (s) => this._serverConnectionHandler(s, adapter));
 	}
 
 	shutdown(force, callback) {
@@ -36,7 +58,7 @@ class ServerShutdown {
 		const tasks = [];
 
 		for (const server of this.servers) {
-			tasks.push(server.close.bind(server));
+			tasks.push((cb) => server.serverShutdownAdapter.close(server, cb));
 		}
 		tasks.push(async.ensureAsync((cb) => this._destroySockets(force, cb)));
 		this.stopped = true;
@@ -46,9 +68,10 @@ class ServerShutdown {
 		});
 	}
 
-	_serverConnectionHandler(socket) {
+	_serverConnectionHandler(socket, adapter) {
 		debug('Starting connection');
 		socket.serverShutdownIdle = true;
+		socket.serverShutdownAdapter = adapter;
 		this.sockets.add(socket);
 		socket.on('close', () => {
 			debug('Connection ended');
@@ -103,10 +126,14 @@ class ServerShutdown {
 
 	_destroySocket(socket) {
 		debug('Destroying socket');
-		// Some sockets use close (engine.io), Node.js uses destroy
-		(socket.destroy || socket.close).call(socket);
+		socket.serverShutdownAdapter.socketClose(socket);
 		this.sockets.delete(socket);
 	}
 }
+
+ServerShutdown.Adapters = {
+	http: 'http',
+	socketio: 'socketio'
+};
 
 module.exports = ServerShutdown;

@@ -50,19 +50,37 @@ closing WebSocket connections on finish of a write.
     // continuing from basic uasge
     const socketio = require('socket.io');
     const io = socketio(httpServer);
-    serverShutdown.registerServer(io.engine);
+    serverShutdown.registerServer(io, ServerShutdown.Adapters.socketio);
 
 ## API
 
-### `ServerShutdown.registerServer(server)`
+### Methods
 
-Registers a server with the library.
+#### `ServerShutdown.registerServer(server[, adapterName = ServerShutdown.Adapters.http])`
 
-### `ServerShutdown.shutdown([force = false][, callback])`
+Registers a server with the library. The adapter name argument is used to set the type of server being registered.
+
+#### `ServerShutdown.shutdown([force = false][, callback])`
 
 Shutdown all the servers registered. If the optional `force` flag is provided and true all connections
 are forecfully disconnected. The `callback` is called once all connections are disconnected and servers
 are closed.
+
+#### `ServerShutdown.registerAdapter(name, adapter)`
+
+Register a server adapter with the system. Name should be a string and adapter is an object that contains a
+`close(server, callback)` function that is responsible for closing the server and a `socketClose(socket)`
+function that is responsible for destroying the sockets the server creates.
+
+### Constants
+
+#### `ServerShutdown.Adapters.http`
+
+The adapter name for the http adapter. Used with `ServerShutdown.registerAdapter`.
+
+#### `ServerShutdown.Adapters.socketio`
+
+The adapter name for the Socket.io adapter. Used with `ServerShutdown.registerAdapter`.
 
 ## Development
 
@@ -82,5 +100,5 @@ This project is released under the ISC license. See [LICENSE](LICENSE.md).
 [4]: https://nodejs.org/api/net.html#net_server_unref
 [5]: https://nodejs.org/api/http.html#http_event_close
 [6]: https://nodejs.org/api/http.html#http_event_request
-[7]: https://nodejs.org/api/http.html#http_class_http_serverresponse
+[7]: https://nodejs.org/api/http.html#http_response_write_chunk_encoding_callback
 [8]: https://github.com/visionmedia/debug
