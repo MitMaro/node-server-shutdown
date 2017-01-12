@@ -45,6 +45,7 @@ class ServerShutdown {
 		server.on('request', this._socketRequestHandler);
 		server.on('upgrade', this._socketUpgradeHandler);
 		server.on('connection', (s) => this._serverConnectionHandler(s, adapter));
+		server.on('secureConnection', (s) => this._serverConnectionHandler(s, adapter));
 	}
 
 	shutdown(force, callback) {
