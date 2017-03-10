@@ -278,7 +278,7 @@ describe('ServerShutdown', function() {
 
 			function acceptRequest() {
 				// we do not respond to the client, and force a shutdown
-				setImmediate(serverManager.shutdown.bind(serverManager, true));
+				setImmediate(serverManager.forceShutdown.bind(serverManager));
 			}
 
 			server.on('listening', createRequest);
@@ -483,7 +483,7 @@ describe('ServerShutdown', function() {
 
 			function acceptRequest() {
 				// we do not respond to the client, and force a shutdown
-				setImmediate(serverManager.shutdown.bind(serverManager, true));
+				setImmediate(serverManager.forceShutdown.bind(serverManager, true));
 			}
 
 			server.on('listening', createRequest);

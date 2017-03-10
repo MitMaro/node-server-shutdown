@@ -48,14 +48,16 @@ class ServerShutdown {
 		server.on('secureConnection', (s) => this._serverConnectionHandler(s, adapter));
 	}
 
-	shutdown(force, callback) {
+	shutdown(callback) {
+		this._shutdown(false, callback);
+	}
+
+	forceShutdown(callback) {
+		this._shutdown(true, callback);
+	}
+
+	_shutdown(force, callback) {
 		debug('Starting shutdown');
-		if (typeof force === 'function') {
-			/* eslint-disable no-param-reassign */
-			callback = force;
-			force = false;
-			/* eslint-enable no-param-reassign */
-		}
 		const tasks = [];
 
 		for (const server of this.servers) {
