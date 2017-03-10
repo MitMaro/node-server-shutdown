@@ -60,11 +60,15 @@ closing WebSocket connections on finish of a write.
 
 Registers a server with the library. The adapter name argument is used to set the type of server being registered.
 
-#### `ServerShutdown.shutdown([force = false][, callback])`
+#### `ServerShutdown.shutdown([callback])`
 
-Shutdown all the servers registered. If the optional `force` flag is provided and true all connections
-are forecfully disconnected. The `callback` is called once all connections are disconnected and servers
+Shutdown all the servers registered. The `callback` is called once all connections are disconnected and servers
 are closed.
+
+#### `ServerShutdown.forceShutdown([callback])`
+
+Shutdown all the servers registered with all connections forcefully disconnected. The `callback` is called once
+all connections are disconnected and servers are closed.
 
 #### `ServerShutdown.registerAdapter(name, adapter)`
 
