@@ -80,6 +80,10 @@ class ServerShutdown {
 			debug('Connection ended');
 			this.sockets.delete(socket);
 		});
+        socket.on('disconnect', () => {
+            debug('Socket disconnected');
+            this.sockets.delete(socket);
+        });
 	}
 
 	_socketRequestHandler(req, res) {
