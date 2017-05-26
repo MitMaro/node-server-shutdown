@@ -66,8 +66,11 @@ class ServerShutdown {
 		tasks.push(async.ensureAsync((cb) => this._destroySockets(force, cb)));
 		this.stopped = true;
 		async.parallel(tasks, () => {
+			this.sockets = new Set();
+			this.servers = new Set();
 			debug('Shutdown complete');
 			(callback || noop)();
+			this.stopped = false;
 		});
 	}
 
@@ -76,14 +79,15 @@ class ServerShutdown {
 		socket.serverShutdownIdle = true;
 		socket.serverShutdownAdapter = adapter;
 		this.sockets.add(socket);
+		// some sockets use close, others use disconnect
 		socket.on('close', () => {
-			debug('Connection ended');
+			debug('Connection closed');
 			this.sockets.delete(socket);
 		});
-        socket.on('disconnect', () => {
-            debug('Socket disconnected');
-            this.sockets.delete(socket);
-        });
+		socket.on('disconnect', () => {
+			debug('Connection disconnected');
+			this.sockets.delete(socket);
+		});
 	}
 
 	_socketRequestHandler(req, res) {

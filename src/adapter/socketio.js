@@ -12,10 +12,5 @@ module.exports = {
 		}
 		debug('SocketIO server shutdown');
 		callback();
-	},
-	socketClose(socket) {
-		debug('Disconnecting SocketIO socket');
-		socket.disconnect(true);
-		debug('SocketIO socket disconnected');
 	}
 };
