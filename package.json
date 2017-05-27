@@ -1,6 +1,6 @@
 {
   "name": "server-shutdown",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Gracefully shutdown any number of HTTP and WebSocket servers in node",
   "main": "src/index.js",
   "engines": {
@@ -31,7 +31,8 @@
   "author": "Tim Oram <mitmaro@gmail.com>",
   "contributors": [
     "Tim Oram <mitmaro@gmail.com>",
-    "Whymarrh Whitby <whymarrh.whitby@gmail.com>"
+    "Whymarrh Whitby <whymarrh.whitby@gmail.com>",
+    "Gautam Chaudhary <gkcgautam@gmail.com>"
   ],
   "license": "ISC",
   "dependencies": {
