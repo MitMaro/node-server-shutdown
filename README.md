@@ -19,38 +19,41 @@ closing WebSocket connections on finish of a write.
 
 ## Install
 
-    npm install server-shutdown
+    npm install --save server-shutdown
 
 ## Usage
 
-    const http = require('http');
-    const https = require('https');
-    const ServerShutdown = require('server-shutdown');
-    const serverShutdown = new ServerShutdown();
+```ecmascript 6
+const http = require('http');
+const https = require('https');
+const ServerShutdown = require('server-shutdown');
+const serverShutdown = new ServerShutdown();
 
-    const httpServer = http.createServer((req, res) => {
-        res.end('HTTP response');
-    }).listen(80);
+const httpServer = http.createServer((req, res) => {
+    res.end('HTTP response');
+}).listen(80);
 
-    const httpsServer = https.createServer((req, res) => {
-        res.end('HTTPS response');
-    }).listen(443);
+const httpsServer = https.createServer((req, res) => {
+    res.end('HTTPS response');
+}).listen(443);
 
-    serverShutdown.registerServer(httpServer);
-    serverShutdown.registerServer(httpsServer);
+serverShutdown.registerServer(httpServer);
+serverShutdown.registerServer(httpsServer);
 
-    process.on('SIGTERM', () => {
-        serverShutdown.shutdown(() => {
-            console.log('All servers shutdown gracefully');
-        })
-    }));
-
+process.on('SIGTERM', () => {
+    serverShutdown.shutdown(() => {
+        console.log('All servers shutdown gracefully');
+    });
+});
+```
 ## Adding Socket.io
 
-    // continuing from basic uasge
-    const socketio = require('socket.io');
-    const io = socketio(httpServer);
-    serverShutdown.registerServer(io, ServerShutdown.Adapters.socketio);
+```ecmascript 6
+// continuing from basic uasge
+const socketio = require('socket.io');
+const io = socketio(httpServer);
+serverShutdown.registerServer(io, ServerShutdown.Adapters.socketio);
+```
 
 ## API
 
