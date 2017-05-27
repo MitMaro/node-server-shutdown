@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "name": "server-shutdown-example",
+  "version": "1.0.0",
+  "description": "Example usage of server-shutdown",
+  "main": "feathers.js",
+  "scripts": {
+    "start:feathers": "node server.js"
+  },
+  "keywords": [],
+  "author": "Tim Oram <mitmaro@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.3",
+    "ecstatic": "^2.1.0",
+    "feathers": "^2.1.2",
+    "feathers-rest": "^1.7.2",
+    "feathers-socketio": "^2.0.0"
+  }
+}
