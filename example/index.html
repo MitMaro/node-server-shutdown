@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Server Shutdown - Examples</title>
+</head>
+<body>
+	<div>
+		<p>Open the development console</p>
+		<p><button id="socket-req">Make Socket.io Request</button></p>
+		<p><button id="feathers-req">Make Feathers Socket.io Request</button></p>
+		<p><button id="http-req">HTTP Request</button></p>
+	</div>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/superagent/1.2.0/superagent.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.js"></script>
+	<script src="//cdn.rawgit.com/feathersjs/feathers-client/v1.1.0/dist/feathers.js"></script>
+	<script>
+		// socket.io
+		const socket = io('http://localhost:3000/', {transports: ['websocket'], path: '/socket.io'});
+		socket.on('connect', () => console.log('Socket.io Connected'));
+		document.getElementById('socket-req').addEventListener('click', () => {
+			console.log("Sending Socket.io Message");
+			socket.emit('service::get', {id: 6});
+			socket.on('service::get::response', (d) => console.log(`Socket.io response`, d));
+		});
+
+		// feathers socket.io
+		const app = feathers();
+		const feathersSocket = io('http://localhost:3000/', {transports: ['websocket'], path: '/feathers.io'});
+		app.configure(feathers.socketio(feathersSocket));
+		feathersSocket.on('connect', () => console.log('Feathers Socket.io Connected'));
+		const service = app.service('service');
+		document.getElementById('feathers-req').addEventListener('click', () => {
+			console.log("Sending Feathers IO Message");
+			service.get(6, (err, data) => console.log('Feathers Response', data));
+		});
+
+		// http request
+		document.getElementById('http-req').addEventListener('click', () => {
+			console.log("Sending HTTP Request");
+			fetch('http://localhost:3000/service/6')
+				.then((res) => res.json())
+				.then((data) => console.log('HTTP Response', data));
+		});
+	</script>
+</body>
+</html>
