@@ -533,7 +533,10 @@ describe('ServerShutdown', function() {
 
 			function createRequest() {
 				const socket = new SocketIoClient(
-					`http://localhost:${server.address().port}`, { transports: [ 'websocket' ]}
+					`http://localhost:${server.address().port}`, {
+						transports: [ 'websocket' ],
+						reconnection: false
+					}
 				);
 
 				socket.on('connect', () => setImmediate(serverManager.shutdown.bind(serverManager)));
