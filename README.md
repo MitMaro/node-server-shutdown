@@ -1,6 +1,6 @@
 # Server Shutdown
 
-[![Dependency Status](https://david-dm.org/MitMaro/node-server-shutdown.svg)](https://david-dm.org/MitMaro/node-server-shutdown)
+[![Known Vulnerabilities](https://snyk.io/test/github/mitmaro/node-server-shutdown/badge.svg)](https://snyk.io/test/github/mitmaro/node-server-shutdown)
 [![Build Status](https://travis-ci.org/MitMaro/node-server-shutdown.svg?branch=master)](https://travis-ci.org/MitMaro/node-server-shutdown)
 [![Coverage Status](https://coveralls.io/repos/github/MitMaro/node-server-shutdown/badge.svg?branch=master)](https://coveralls.io/github/MitMaro/node-server-shutdown?branch=master)
 [![NPM version](https://img.shields.io/npm/v/server-shutdown.svg)](https://www.npmjs.com/package/server-shutdown)
@@ -21,9 +21,14 @@ closing WebSocket connections on finish of a write.
 
     npm install --save server-shutdown
 
-## Usage
+## Documentation
 
-```ecmascript 6
+[Example][9]
+[API Documentation][10]
+
+### Usage
+
+```javascript
 const http = require('http');
 const https = require('https');
 const ServerShutdown = require('server-shutdown');
@@ -46,48 +51,15 @@ process.on('SIGTERM', () => {
     });
 });
 ```
-## Adding Socket.io
 
-```ecmascript 6
+#### Adding Socket.io
+
+```javascript
 // continuing from basic uasge
 const socketio = require('socket.io');
 const io = socketio(httpServer);
 serverShutdown.registerServer(io, ServerShutdown.Adapters.socketio);
 ```
-
-## API
-
-### Methods
-
-#### `ServerShutdown.registerServer(server[, adapterName = ServerShutdown.Adapters.http])`
-
-Registers a server with the library. The adapter name argument is used to set the type of server being registered.
-
-#### `ServerShutdown.shutdown([callback])`
-
-Shutdown all the servers registered. The `callback` is called once all connections are disconnected and servers
-are closed.
-
-#### `ServerShutdown.forceShutdown([callback])`
-
-Shutdown all the servers registered with all connections forcefully disconnected. The `callback` is called once
-all connections are disconnected and servers are closed.
-
-#### `ServerShutdown.registerAdapter(name, adapter)`
-
-Register a server adapter with the system. Name should be a string and adapter is an object that contains a
-`close(server, callback)` function that is responsible for closing the server and a `socketClose(socket)`
-function that is responsible for destroying the sockets the server creates.
-
-### Constants
-
-#### `ServerShutdown.Adapters.http`
-
-The adapter name for the http adapter. Used with `ServerShutdown.registerAdapter`.
-
-#### `ServerShutdown.Adapters.socketio`
-
-The adapter name for the Socket.io adapter. Used with `ServerShutdown.registerAdapter`.
 
 ## Development
 
@@ -109,3 +81,5 @@ This project is released under the ISC license. See [LICENSE](LICENSE.md).
 [6]: https://nodejs.org/api/http.html#http_event_request
 [7]: https://nodejs.org/api/http.html#http_response_write_chunk_encoding_callback
 [8]: https://github.com/visionmedia/debug
+[9]: example/README.md
+[10]: http://www.mitmaro.ca/node-server-shutdown/
