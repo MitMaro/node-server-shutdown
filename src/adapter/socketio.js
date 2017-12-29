@@ -12,5 +12,5 @@ module.exports = {
 		}
 		debug('SocketIO server shutdown');
 		callback();
-	}
+	},
 };

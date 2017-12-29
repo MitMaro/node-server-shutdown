@@ -16,53 +16,54 @@ if (typeof Object.getPrototypeOf(http.Server.prototype).listening === 'undefined
 			return Boolean(this._handle);
 		},
 		configurable: true,
-		enumerable: true
+		enumerable: true,
 	});
 }
 
-// monkey patch http server so that we have server.listening in Node 4
+// monkey patch https server so that we have server.listening in Node 4
 if (typeof Object.getPrototypeOf(https.Server.prototype).listening === 'undefined') {
-	console.log('WARN: https.Server.listening is not defined, pataching'); // eslint-disable-line no-console
+	console.log('WARN: https.Server.listening is not defined, patching'); // eslint-disable-line no-console
 	Object.defineProperty(https.Server.prototype, 'listening', {
 		get() {
 			return Boolean(this._handle);
 		},
 		configurable: true,
-		enumerable: true
+		enumerable: true,
 	});
 }
 
 // eslint-disable-next-line no-process-env
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-describe('ServerShutdown', function() {
+describe('ServerShutdown', function () {
 	let clientDone = false;
 	let shutdownDone = false;
 
 	function checkDone(done) {
 		if (clientDone && shutdownDone) {
-			done();
+			return done();
 		}
+		return undefined;
 	}
 
-	beforeEach(function() {
+	beforeEach(function () {
 		clientDone = false;
 		shutdownDone = false;
 	});
 
-	it('should error when registering server with unknown adapter', function() {
+	it('should error when registering server with unknown adapter', function () {
 		const serverManager = new ServerShutdown();
 
-		expect(() => serverManager.registerServer(null, 'invalid-adpater-name'))
-			.to.throw(/The adapter, invalid-adpater-name, is not registered/);
+		expect(() => serverManager.registerServer(null, 'invalid-adapter-name'))
+			.to.throw(/The adapter, invalid-adapter-name, is not registered/);
 	});
 
-	describe('with http connection', function() {
+	describe('with http connection', function () {
 		let server;
 		let serverManager;
 		let port;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			serverManager = new ServerShutdown();
 			server = http.createServer();
 			serverManager.registerServer(server);
@@ -71,18 +72,18 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should shutdown with no active connections', function(done) {
+		it('should shutdown with no active connections', function (done) {
 			setImmediate(serverManager.shutdown.bind(serverManager, () => {
 				expect(server.listening).to.be.false;
 				done();
 			}));
 		});
 
-		it('should shutdown with active HTTP connection', function(done) {
+		it('should shutdown with active HTTP connection', function (done) {
 			function createRequest() {
 				const client = http.request({
 					port,
-					headers: { Connection: 'keep-alive' }
+					headers: {Connection: 'keep-alive'},
 				}, (res) => {
 					expect(res.statusCode).to.equal(200);
 					clientDone = true;
@@ -112,12 +113,12 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should shutdown with inactive HTTP connection', function(done) {
+		it('should shutdown with inactive HTTP connection', function (done) {
 			function createRequest() {
 				const client = http.request({
 					port,
-					headers: { Connection: 'keep-alive' }
-				}, function(res) {
+					headers: {Connection: 'keep-alive'},
+				}, function (res) {
 					expect(res.statusCode).to.equal(200);
 					clientDone = true;
 					checkDone(done);
@@ -144,18 +145,18 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should shutdown with inactive websocket connection', function(done) {
+		it('should shutdown with inactive websocket connection', function (done) {
 			function createRequest() {
 				const client = http.request({
 					port,
 					headers: {
 						Connection: 'Upgrade,keep-alive',
-						Upgrade: 'websocket'
-					}
+						Upgrade: 'websocket',
+					},
 				});
 
 				client.end();
-				client.on('upgrade', function(res) {
+				client.on('upgrade', function (res) {
 					expect(res.statusCode).to.equal(101);
 					expect(server.listening).to.be.false;
 					clientDone = true;
@@ -170,7 +171,7 @@ describe('ServerShutdown', function() {
 					'Upgrade: websocket',
 					'Connection: Upgrade',
 					'',
-					''
+					'',
 				].join('\r\n'));
 				// stop server later
 				setImmediate(serverManager.shutdown.bind(serverManager));
@@ -186,18 +187,18 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should shutdown with active websocket connection', function(done) {
+		it('should shutdown with active websocket connection', function (done) {
 			function createRequest() {
 				const client = http.request({
 					port,
 					headers: {
 						Connection: 'Upgrade,keep-alive',
-						Upgrade: 'websocket'
-					}
+						Upgrade: 'websocket',
+					},
 				});
 
 				client.end();
-				client.on('upgrade', function(res) {
+				client.on('upgrade', function (res) {
 					expect(res.statusCode).to.equal(101);
 					expect(server.listening).to.be.false;
 					clientDone = true;
@@ -213,7 +214,7 @@ describe('ServerShutdown', function() {
 					'Upgrade: websocket',
 					'Connection: Upgrade',
 					'',
-					''
+					'',
 				].join('\r\n'));
 				// shutdown things
 				serverManager.shutdown();
@@ -233,14 +234,14 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should pass on non-websocket connections', function(done) {
+		it('should pass on non-websocket connections', function (done) {
 			function createRequest() {
 				const client = http.request({
 					port,
 					headers: {
 						Connection: 'Upgrade,keep-alive',
-						Upgrade: 'not-websocket'
-					}
+						Upgrade: 'not-websocket',
+					},
 				});
 
 				client.end();
@@ -264,12 +265,12 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should force shutdown with active connections', function(done) {
+		it('should force shutdown with active connections', function (done) {
 			function createRequest() {
 				const client = http.request({
 					port,
-					headers: { Connection: 'keep-alive' }
-				}, function() {
+					headers: {Connection: 'keep-alive'},
+				}, function () {
 					done.fail();
 				});
 
@@ -291,17 +292,17 @@ describe('ServerShutdown', function() {
 		});
 	});
 
-	describe('with https connection', function() {
+	describe('with https connection', function () {
 		let server;
 		let serverManager;
 		let port;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			serverManager = new ServerShutdown();
 			/* eslint-disable no-sync */
 			server = https.createServer({
 				key: fs.readFileSync('test/ssl/key.pem'),
-				cert: fs.readFileSync('test/ssl/cert.pem')
+				cert: fs.readFileSync('test/ssl/cert.pem'),
 			});
 			/* eslint-enable no-sync */
 			serverManager.registerServer(server);
@@ -310,19 +311,19 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should shutdown with no active connections', function(done) {
+		it('should shutdown with no active connections', function (done) {
 			setImmediate(serverManager.shutdown.bind(serverManager, () => {
 				expect(server.listening).to.be.false;
 				done();
 			}));
 		});
 
-		it('should shutdown with inactive HTTPS connection', function(done) {
+		it('should shutdown with inactive HTTPS connection', function (done) {
 			function createRequest() {
 				const client = https.request({
 					port,
-					headers: { Connection: 'keep-alive' }
-				}, function(res) {
+					headers: {Connection: 'keep-alive'},
+				}, function (res) {
 					expect(res.statusCode).to.equal(200);
 					clientDone = true;
 					checkDone(done);
@@ -349,18 +350,18 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should shutdown with inactive websocket connection', function(done) {
+		it('should shutdown with inactive websocket connection', function (done) {
 			function createRequest() {
 				const client = https.request({
 					port,
 					headers: {
 						Connection: 'Upgrade,keep-alive',
-						Upgrade: 'websocket'
-					}
+						Upgrade: 'websocket',
+					},
 				});
 
 				client.end();
-				client.on('upgrade', function(res) {
+				client.on('upgrade', function (res) {
 					expect(res.statusCode).to.equal(101);
 					expect(server.listening).to.be.false;
 					clientDone = true;
@@ -375,7 +376,7 @@ describe('ServerShutdown', function() {
 					'Upgrade: websocket',
 					'Connection: Upgrade',
 					'',
-					''
+					'',
 				].join('\r\n'));
 				// stop server later
 				setImmediate(serverManager.shutdown.bind(serverManager));
@@ -391,18 +392,18 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should shutdown with active websocket connection', function(done) {
+		it('should shutdown with active websocket connection', function (done) {
 			function createRequest() {
 				const client = https.request({
 					port,
 					headers: {
 						Connection: 'Upgrade,keep-alive',
-						Upgrade: 'websocket'
-					}
+						Upgrade: 'websocket',
+					},
 				});
 
 				client.end();
-				client.on('upgrade', function(res) {
+				client.on('upgrade', function (res) {
 					expect(res.statusCode).to.equal(101);
 					expect(server.listening).to.be.false;
 					clientDone = true;
@@ -418,7 +419,7 @@ describe('ServerShutdown', function() {
 					'Upgrade: websocket',
 					'Connection: Upgrade',
 					'',
-					''
+					'',
 				].join('\r\n'));
 				// shutdown things
 				serverManager.shutdown();
@@ -438,14 +439,14 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should pass on non-websocket connections', function(done) {
+		it('should pass on non-websocket connections', function (done) {
 			function createRequest() {
 				const client = https.request({
 					port,
 					headers: {
 						Connection: 'Upgrade,keep-alive',
-						Upgrade: 'not-websocket'
-					}
+						Upgrade: 'not-websocket',
+					},
 				});
 
 				client.end();
@@ -469,12 +470,12 @@ describe('ServerShutdown', function() {
 			});
 		});
 
-		it('should force shutdown with active connections', function(done) {
+		it('should force shutdown with active connections', function (done) {
 			function createRequest() {
 				const client = https.request({
 					port,
-					headers: { Connection: 'keep-alive' }
-				}, function() {
+					headers: {Connection: 'keep-alive'},
+				}, function () {
 					done.fail();
 				});
 
@@ -496,14 +497,14 @@ describe('ServerShutdown', function() {
 		});
 	});
 
-	describe('with socketio adapter', () => {
+	describe('with socketio adapter', function () {
 		let serverManager;
 
-		beforeEach(function() {
+		beforeEach(function () {
 			serverManager = new ServerShutdown();
 		});
 
-		it('should shutdown with a socketio server registered', function(done) {
+		it('should shutdown with a socketio server registered', function (done) {
 			serverManager.registerServer(new SocketIo(http.createServer()), ServerShutdown.Adapters.socketio);
 			setImmediate(serverManager.shutdown.bind(serverManager, () => {
 				// no real test that can be performed here, if socketio server does not shutdown
@@ -512,7 +513,7 @@ describe('ServerShutdown', function() {
 			}));
 		});
 
-		it('should ignore a unattached socketio server', function(done) {
+		it('should ignore a unattached socketio server', function (done) {
 			serverManager.registerServer(new SocketIo(), ServerShutdown.Adapters.socketio);
 			setImmediate(serverManager.shutdown.bind(serverManager, () => {
 				// no real test that can be performed here, if socketio server does not shutdown
@@ -521,11 +522,11 @@ describe('ServerShutdown', function() {
 			}));
 		});
 
-		it('should shutdown with active websocket connection', function(done) {
+		it('should shutdown with active websocket connection', function (done) {
 			const server = http.createServer();
 			const io = new SocketIo(server, {
 				serveClient: false,
-				transports: [ 'websocket' ]
+				transports: ['websocket'],
 			});
 
 			serverManager.registerServer(server);
@@ -533,7 +534,10 @@ describe('ServerShutdown', function() {
 
 			function createRequest() {
 				const socket = new SocketIoClient(
-					`http://localhost:${server.address().port}`, { transports: [ 'websocket' ]}
+					`http://localhost:${server.address().port}`, {
+						transports: ['websocket'],
+						reconnection: false,
+					}
 				);
 
 				socket.on('connect', () => setImmediate(serverManager.shutdown.bind(serverManager)));

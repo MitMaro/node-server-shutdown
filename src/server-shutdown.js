@@ -144,7 +144,7 @@ class ServerShutdown {
 
 ServerShutdown.Adapters = {
 	http: 'http',
-	socketio: 'socketio'
+	socketio: 'socketio',
 };
 
 module.exports = ServerShutdown;

@@ -14,11 +14,11 @@ const serverShutdown = new ServerShutdown();
 // feathers socket.io
 const app = feathers();
 
-app.configure(featherssocketio({ path: '/feathers.io' }, (io) => {
+app.configure(featherssocketio({path: '/feathers.io'}, (io) => {
 	serverShutdown.registerServer(io, ServerShutdown.Adapters.socketio);
 
 	io.on('connection', (socket) => {
-		console.log(`Feathers client connected`);
+		console.log('Feathers client connected');
 		socket.emit('connected', {});
 	});
 }));
@@ -30,8 +30,8 @@ app.configure(rest());
 app.use('/service', {
 	get(id) {
 		console.log(`service::get ${id}`);
-		return Promise.resolve({ id });
-	}
+		return Promise.resolve({id});
+	},
 });
 
 const server = app.listen(3000);
@@ -40,7 +40,7 @@ serverShutdown.registerServer(server);
 
 // socket.io
 const io = socketio(server, {
-	serveClient: false, path: '/socket.io'
+	serveClient: false, path: '/socket.io',
 });
 
 serverShutdown.registerServer(io);
@@ -52,14 +52,12 @@ io.on('connection', (socket) => {
 	});
 });
 
-
 const staticServer = http.createServer(
-	ecstatic({ root: __dirname })
+	ecstatic({root: __dirname})
 ).listen(8080);
 
 serverShutdown.registerServer(staticServer);
 console.log('Static server started on : http://localhost:8080');
-
 
 let sigint = false;
 
