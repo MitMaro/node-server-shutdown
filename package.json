@@ -2,7 +2,10 @@
   "name": "server-shutdown",
   "version": "1.0.1",
   "description": "Gracefully shutdown any number of HTTP and WebSocket servers in node",
-  "main": "src/index.js",
+  "main": "src/server-shutdown.js",
+  "files": [
+    "src/"
+  ],
   "engines": {
     "node": ">=4.1.0"
   },
@@ -14,11 +17,10 @@
     "url": "https://github.com/MitMaro/node-server-shutdown/issues"
   },
   "scripts": {
-    "test": "npm run test:unit:coverage && npm run lint",
-    "test:unit": "mocha",
-    "test:unit:coverage": "nyc mocha",
-    "test:coveralls": "cat ./coverage/lcov.info | coveralls",
-    "lint": "eslint ."
+    "lint": "./scripts/lint.bash",
+    "test": "npm run lint && npm run test:coverage",
+    "test:unit": "./scripts/test.bash :unit",
+    "test:coverage": "./scripts/test.bash :unit:coverage"
   },
   "keywords": [
     "http-server",
@@ -40,6 +42,7 @@
     "debug": "^3.1.0"
   },
   "devDependencies": {
+    "@mitmaro/build-scripts": "^0.1.5",
     "chai": "^4.1.2",
     "eslint": "^4.13.1",
     "eslint-config-mitmaro": "^3.0.0",
