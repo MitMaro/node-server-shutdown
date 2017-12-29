@@ -2,13 +2,20 @@ sudo: false
 language: node_js
 branches:
     only:
-        - master
+      - master
 node_js:
-    - "4.1.0"
-    - "4"
-    - "6.0.0"
-    - "6"
-before_script:
-    - npm install coveralls
-after_script:
-    - test $TRAVIS_NODE_VERSION = "6" && npm run test:coveralls
+    - '4'
+    - '6'
+    - '8'
+before_script: npm install coveralls
+script: npm run test
+after_script: test $TRAVIS_NODE_VERSION = "8" && nyc report --reporter=text-lcov | coveralls
+deploy:
+    provider: npm
+    email: mitmaro@gmail.com
+    api_key:
+        secure: dXV2+e3WGMuB1yvGpu+y+e7dULfs2lyCbbzpiRNnJlVDoPB3KTgX8Y2wgOXBmPLjILgRcL+7TL+mLz7qMw5fkYso9tP/4TDXoc4O+qt6iCWT6igZx/dpy/pdr5T40kn4EKwxB+gQ3N1R4klzbkqOnd0PrfQ1qLfdS1cmo7YB4266L6eeTid1q0ogrW6TCCyFt+VfwNoTwwFZtAFB2yyGhOMnTYBrL2K0FOgHhymGlcpeUz1w+Q4mFVgZTUKBG5Bksix2b6R85l0txkqAlO+JCrj1ylULX/HjWMrtZqApwTPaoknKjbIU/dVFU4qovMoQyp7gtoB6CPuLgCE2KM90/xRgUyuxKN1wwRK8fTnlAPdqVlevT+fDH/Zn9mwNHNNVx9828IUoKmGlteAwJaRF72jBkkgIhJ7sY6dlrPBZD980GMu8hzbk2idFco7ETDCEcIFQ4H0WbCycpgsotY+/6PWvE7RFzD2MOMazwXW/Bu6Ef3pTtrLuJAdkIj2Kv/ZK8hS5eDjqEwcDPB7HZrkjmvzUmENQAqW0pkHIn4HsL3GxLNvjCYiawqAuM4o74PceKFMByhBW+G4a6uqvWP6RczN7jwHr0XUK/MlzRljT1aiRvfBSLwqdzxxMSypnMDmvqi2ueV4xMtbzxYiREKPmQ10qAUaC5wrTe6OC1QnhN7c=
+    on:
+        tags: true
+        repo: MitMaro/server-shutdown
+        node: '8'

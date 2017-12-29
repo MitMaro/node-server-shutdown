@@ -4,7 +4,7 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const expect = require('chai').expect;
-const ServerShutdown = require('../src/');
+const ServerShutdown = require('../src/server-shutdown');
 const SocketIo = require('socket.io');
 const SocketIoClient = require('socket.io-client');
 
