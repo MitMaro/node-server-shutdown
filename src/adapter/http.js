@@ -14,5 +14,5 @@ module.exports = {
 		debug('Ending HTTP socket');
 		socket.destroy();
 		debug('HTTP socket ended');
-	}
+	},
 };
