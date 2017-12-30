@@ -13,5 +13,3 @@ typedoc \
 	--out "docs/" \
 	--mode file \
 	src/
-
-echo "www.mitmaro.ca" > docs/CNAME
