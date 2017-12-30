@@ -20,8 +20,8 @@ class ServerShutdown {
 		this._socketUpgradeHandler = this._socketUpgradeHandler.bind(this);
 		this._destroySockets = this._destroySockets.bind(this);
 
-		this.registerAdapter(ServerShutdown.Adapters.http, httpAdapter);
-		this.registerAdapter(ServerShutdown.Adapters.socketio, socketioAdapter);
+		this.registerAdapter(ServerShutdown.Adapter.http, httpAdapter);
+		this.registerAdapter(ServerShutdown.Adapter.socketio, socketioAdapter);
 	}
 
 	registerAdapter(name, adapter) {
@@ -31,7 +31,7 @@ class ServerShutdown {
 	registerServer(server, adapterName) {
 		if (!adapterName) {
 			/* eslint-disable no-param-reassign */
-			adapterName = ServerShutdown.Adapters.http;
+			adapterName = ServerShutdown.Adapter.http;
 			/* eslint-enable no-param-reassign */
 		}
 		if (!this.adapters.has(adapterName)) {
@@ -142,9 +142,14 @@ class ServerShutdown {
 	}
 }
 
-ServerShutdown.Adapters = {
+ServerShutdown.Adapter = {
 	http: 'http',
 	socketio: 'socketio',
+};
+
+ServerShutdown.adapters = {
+	http: httpAdapter,
+	socketio: socketioAdapter,
 };
 
 module.exports = ServerShutdown;

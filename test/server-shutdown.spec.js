@@ -505,7 +505,7 @@ describe('ServerShutdown', function () {
 		});
 
 		it('should shutdown with a socketio server registered', function (done) {
-			serverManager.registerServer(new SocketIo(http.createServer()), ServerShutdown.Adapters.socketio);
+			serverManager.registerServer(new SocketIo(http.createServer()), ServerShutdown.Adapter.socketio);
 			setImmediate(serverManager.shutdown.bind(serverManager, () => {
 				// no real test that can be performed here, if socketio server does not shutdown
 				// this will timeout
@@ -514,7 +514,7 @@ describe('ServerShutdown', function () {
 		});
 
 		it('should ignore a unattached socketio server', function (done) {
-			serverManager.registerServer(new SocketIo(), ServerShutdown.Adapters.socketio);
+			serverManager.registerServer(new SocketIo(), ServerShutdown.Adapter.socketio);
 			setImmediate(serverManager.shutdown.bind(serverManager, () => {
 				// no real test that can be performed here, if socketio server does not shutdown
 				// this will timeout
@@ -530,7 +530,7 @@ describe('ServerShutdown', function () {
 			});
 
 			serverManager.registerServer(server);
-			serverManager.registerServer(io, ServerShutdown.Adapters.socketio);
+			serverManager.registerServer(io, ServerShutdown.Adapter.socketio);
 
 			function createRequest() {
 				const socket = new SocketIoClient(

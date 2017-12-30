@@ -2,7 +2,7 @@
 
 ## Start
 
-```
+```shell
 npm install
 npm run start
 ```

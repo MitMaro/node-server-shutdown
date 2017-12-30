@@ -8,14 +8,14 @@ const http = require('http');
 const rest = require('feathers-rest');
 const socketio = require('socket.io');
 
-const ServerShutdown = require('../src/');
+const ServerShutdown = require('../src/server-shutdown');
 const serverShutdown = new ServerShutdown();
 
 // feathers socket.io
 const app = feathers();
 
 app.configure(featherssocketio({path: '/feathers.io'}, (io) => {
-	serverShutdown.registerServer(io, ServerShutdown.Adapters.socketio);
+	serverShutdown.registerServer(io, ServerShutdown.Adapter.socketio);
 
 	io.on('connection', (socket) => {
 		console.log('Feathers client connected');
