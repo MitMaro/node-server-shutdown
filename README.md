@@ -23,8 +23,8 @@ closing WebSocket connections on finish of a write.
 
 ## Documentation
 
-[Example][9]
-[API Documentation][10]
+* [Example][9]
+* [API Documentation][10]
 
 ### Usage
 
