@@ -118,7 +118,7 @@ describe('ServerShutdown', function () {
 				const client = http.request({
 					port,
 					headers: {Connection: 'keep-alive'},
-				}, function (res) {
+				}, (res) => {
 					expect(res.statusCode).to.equal(200);
 					clientDone = true;
 					checkDone(done);
@@ -156,7 +156,7 @@ describe('ServerShutdown', function () {
 				});
 
 				client.end();
-				client.on('upgrade', function (res) {
+				client.on('upgrade', (res) => {
 					expect(res.statusCode).to.equal(101);
 					expect(server.listening).to.be.false;
 					clientDone = true;
@@ -198,7 +198,7 @@ describe('ServerShutdown', function () {
 				});
 
 				client.end();
-				client.on('upgrade', function (res) {
+				client.on('upgrade', (res) => {
 					expect(res.statusCode).to.equal(101);
 					expect(server.listening).to.be.false;
 					clientDone = true;
@@ -270,7 +270,7 @@ describe('ServerShutdown', function () {
 				const client = http.request({
 					port,
 					headers: {Connection: 'keep-alive'},
-				}, function () {
+				}, () => {
 					done.fail();
 				});
 
@@ -323,7 +323,7 @@ describe('ServerShutdown', function () {
 				const client = https.request({
 					port,
 					headers: {Connection: 'keep-alive'},
-				}, function (res) {
+				}, (res) => {
 					expect(res.statusCode).to.equal(200);
 					clientDone = true;
 					checkDone(done);
@@ -361,7 +361,7 @@ describe('ServerShutdown', function () {
 				});
 
 				client.end();
-				client.on('upgrade', function (res) {
+				client.on('upgrade', (res) => {
 					expect(res.statusCode).to.equal(101);
 					expect(server.listening).to.be.false;
 					clientDone = true;
@@ -403,7 +403,7 @@ describe('ServerShutdown', function () {
 				});
 
 				client.end();
-				client.on('upgrade', function (res) {
+				client.on('upgrade', (res) => {
 					expect(res.statusCode).to.equal(101);
 					expect(server.listening).to.be.false;
 					clientDone = true;
@@ -475,7 +475,7 @@ describe('ServerShutdown', function () {
 				const client = https.request({
 					port,
 					headers: {Connection: 'keep-alive'},
-				}, function () {
+				}, () => {
 					done.fail();
 				});
 
