@@ -26,6 +26,7 @@ declare class ServerShutdown {
 	/**
 	 * Registers a server with the library with an adapter name used to set the type of server being registered.
 	 * @param server The server instance
+	 * @param adapterName The name of the adapter
 	 */
 	registerServer(server: ServerShutdown.IServer, adapterName: string): void;
 

@@ -931,14 +931,13 @@ img { max-width: 100%; }
 				closing any idle HTTP and WebSocket connections, closing any busy HTTP connections once the inflight request has completed, and
 			closing WebSocket connections on finish of a write. </p>
 			<h2 id="install">Install</h2>
-			<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save server-shutdown</span>
-</code></pre><h2 id="documentation">Documentation</h2>
+			<pre><code>npm <span class="hljs-keyword">install</span> <span class="hljs-comment">--save server-shutdown</span></code></pre><h2 id="documentation">Documentation</h2>
 			<ul>
 				<li><a href="example/README.md">Example</a></li>
 				<li><a href="http://www.mitmaro.ca/node-server-shutdown/">API Documentation</a></li>
 			</ul>
 			<h3 id="usage">Usage</h3>
-			<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);
+			<pre><code class="language-javascript"><span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);
 <span class="hljs-keyword">const</span> https = <span class="hljs-built_in">require</span>(<span class="hljs-string">'https'</span>);
 <span class="hljs-keyword">const</span> ServerShutdown = <span class="hljs-built_in">require</span>(<span class="hljs-string">'server-shutdown'</span>);
 <span class="hljs-keyword">const</span> serverShutdown = <span class="hljs-keyword">new</span> ServerShutdown();
@@ -958,14 +957,12 @@ process.on(<span class="hljs-string">'SIGTERM'</span>, () =&gt; {
     serverShutdown.shutdown(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
         <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'All servers shutdown gracefully'</span>);
     });
-});
-</code></pre>
+});</code></pre>
 			<h4 id="adding-socket-io">Adding Socket.io</h4>
-			<pre><code class="lang-javascript"><span class="hljs-comment">// continuing from basic uasge</span>
+			<pre><code class="language-javascript"><span class="hljs-comment">// continuing from basic uasge</span>
 <span class="hljs-keyword">const</span> socketio = <span class="hljs-built_in">require</span>(<span class="hljs-string">'socket.io'</span>);
 <span class="hljs-keyword">const</span> io = socketio(httpServer);
-serverShutdown.registerServer(io, ServerShutdown.Adapters.socketio);
-</code></pre>
+serverShutdown.registerServer(io, ServerShutdown.Adapters.socketio);</code></pre>
 			<h2 id="development">Development</h2>
 			<h3 id="debugging">Debugging</h3>
 			<p>This library uses <a href="https://github.com/visionmedia/debug">debug</a> to produce debugging output. To enable add <code>DEBUG=server-shutdown</code> before
