@@ -4,9 +4,9 @@ branches:
     only:
       - master
 node_js:
-    - '4'
     - '6'
     - '8'
+    - '10'
 before_script: npm install coveralls
 script: npm run test
 after_script: test $TRAVIS_NODE_VERSION = "8" && nyc report --reporter=text-lcov | coveralls
