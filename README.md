@@ -8,14 +8,14 @@
 
 Using just [`server.close`][1] only terminates the server once every connection is closed. This is problematic since,
 [by design][2], keep-alive connections can continue to hold the server open, and WebSockets can hold the connection open
-for extended periods of time. A [naive solution][3] forcefully destroys all the sockets, interrupting any inflight requests.
-Another solution is to [`server.unref`][4] the server, but this isn't a satisfactory solution as it does not allow the
-[`close`][5] event to be used.
+for extended periods of time. A [naive solution][3] forcefully destroys all the sockets, interrupting any in-flight
+requests. Another solution is to [`server.unref`][4] the server, but this isn't a satisfactory solution as it does not
+allow the [`close`][5] event to be used.
 
-This library solves this problem by tracking when a connection is busy, using [`request`][6] for HTTP connections, and hooking
-into [`write`][7] in the case of WebSockets. The server shutdowns by first stopping any additional connections being made,
-closing any idle HTTP and WebSocket connections, closing any busy HTTP connections once the inflight request has completed, and
-closing WebSocket connections on finish of a write. 
+This library solves this problem by tracking when a connection is busy, using [`request`][6] for HTTP connections, and
+hooking into [`write`][7] in the case of WebSockets. The server shutdowns by first stopping any additional connections
+being made, closing any idle HTTP and WebSocket connections, closing any busy HTTP connections once the in-flight
+request has completed, and closing WebSocket connections on the finish of a write. 
 
 ## Install
 
@@ -31,7 +31,7 @@ closing WebSocket connections on finish of a write.
 ```javascript
 const http = require('http');
 const https = require('https');
-const ServerShutdown = require('server-shutdown');
+const {ServerShutdown} = require('server-shutdown');
 const serverShutdown = new ServerShutdown();
 
 const httpServer = http.createServer((req, res) => {
@@ -55,18 +55,28 @@ process.on('SIGTERM', () => {
 #### Adding Socket.io
 
 ```javascript
-// continuing from basic uasge
+// continuing from basic usage
 const socketio = require('socket.io');
 const io = socketio(httpServer);
-serverShutdown.registerServer(io, ServerShutdown.Adapters.socketio);
+serverShutdown.registerServer(io, ServerShutdown.Adapter.socketio);
 ```
 
-## Development
-
-### Debugging
+## Debugging
 
 This library uses [debug][8] to produce debugging output. To enable add `DEBUG=server-shutdown` before
 your run command.
+
+## Development
+
+Development is done using Node 8 and NPM 5, and tested against Node 6 through 10. To get started
+
+* Install Node 8 from [NodeJS.org][node] or using [nvm]
+* Clone the repository using `git clone git@github.com:MitMaro/node-server-shutdown.git`
+* `cd node-server-shutdown`
+* Install the dependencies `npm install`
+* Make changes, add tests, etc.
+* Run linting and test suite using `npm run test`
+* Build using `npm run build`
 
 ## License
 

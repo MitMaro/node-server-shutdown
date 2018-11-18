@@ -147,9 +147,4 @@ ServerShutdown.Adapter = {
 	socketio: 'socketio',
 };
 
-ServerShutdown.adapters = {
-	http: httpAdapter,
-	socketio: socketioAdapter,
-};
-
 module.exports = ServerShutdown;

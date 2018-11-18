@@ -7,8 +7,7 @@ const featherssocketio = require('feathers-socketio');
 const http = require('http');
 const rest = require('feathers-rest');
 const socketio = require('socket.io');
-
-const ServerShutdown = require('../src/server-shutdown');
+const {ServerShutdown} = require('../src/');
 const serverShutdown = new ServerShutdown();
 
 // feathers socket.io
@@ -36,14 +35,14 @@ app.use('/service', {
 
 const server = app.listen(3000);
 
-serverShutdown.registerServer(server);
+serverShutdown.registerServer(server, ServerShutdown.Adapter.http);
 
 // socket.io
 const io = socketio(server, {
 	serveClient: false, path: '/socket.io',
 });
 
-serverShutdown.registerServer(io);
+serverShutdown.registerServer(io, ServerShutdown.Adapter.socketio);
 
 io.on('connection', (socket) => {
 	socket.on('service::get', (data) => {
@@ -56,7 +55,7 @@ const staticServer = http.createServer(
 	ecstatic({root: __dirname})
 ).listen(8080);
 
-serverShutdown.registerServer(staticServer);
+serverShutdown.registerServer(staticServer, ServerShutdown.Adapter.http);
 console.log('Static server started on : http://localhost:8080');
 
 let sigint = false;

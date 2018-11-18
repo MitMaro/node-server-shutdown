@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "description": "Example usage of server-shutdown",
   "main": "feathers.js",
+  "engines": {
+    "node": ">=6.0,0"
+  },
   "scripts": {
     "start:feathers": "node server.js"
   },

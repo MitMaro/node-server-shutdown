@@ -4,33 +4,9 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const expect = require('chai').expect;
-const ServerShutdown = require('../src/server-shutdown');
+const {ServerShutdown} = require('../src/');
 const SocketIo = require('socket.io');
 const SocketIoClient = require('socket.io-client');
-
-// monkey patch http server so that we have server.listening in Node 4
-if (typeof Object.getPrototypeOf(http.Server.prototype).listening === 'undefined') {
-	console.log('WARN: http.Server.listening is not defined, pataching'); // eslint-disable-line no-console
-	Object.defineProperty(http.Server.prototype, 'listening', {
-		get() {
-			return Boolean(this._handle);
-		},
-		configurable: true,
-		enumerable: true,
-	});
-}
-
-// monkey patch https server so that we have server.listening in Node 4
-if (typeof Object.getPrototypeOf(https.Server.prototype).listening === 'undefined') {
-	console.log('WARN: https.Server.listening is not defined, patching'); // eslint-disable-line no-console
-	Object.defineProperty(https.Server.prototype, 'listening', {
-		get() {
-			return Boolean(this._handle);
-		},
-		configurable: true,
-		enumerable: true,
-	});
-}
 
 // eslint-disable-next-line no-process-env
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -234,7 +210,7 @@ describe('ServerShutdown', function () {
 			});
 		});
 
-		it('should pass on non-websocket connections', function (done) {
+		it.only('should pass on non-websocket connections', function (done) {
 			function createRequest() {
 				const client = http.request({
 					port,
@@ -255,6 +231,7 @@ describe('ServerShutdown', function () {
 				checkDone(done);
 			}
 
+			server.on('error', (err) => console.log(err));
 			server.on('listening', createRequest);
 			server.once('upgrade', acceptUpgrade);
 			server.once('close', (err) => {
