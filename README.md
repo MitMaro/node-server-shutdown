@@ -1,3 +1,9 @@
+# Deprecation Notice
+
+At some point, Socket.IO started correctly handling active connections on shutdown. Since the main purpose of this
+library was to add support for gracefully shutting down a Socket.IO server, I've decided to cease development on this
+project. It should be easy to replace the usage of this library with the maintained library [Stoppable].
+
 # Server Shutdown
 
 [![Known Vulnerabilities](https://snyk.io/test/github/mitmaro/node-server-shutdown/badge.svg)](https://snyk.io/test/github/mitmaro/node-server-shutdown)
@@ -83,3 +89,4 @@ This project is released under the ISC license. See [LICENSE](LICENSE.md).
 [8]: https://github.com/visionmedia/debug
 [9]: example/README.md
 [10]: http://www.mitmaro.ca/node-server-shutdown/
+[stoppable]:https://github.com/hunterloftis/stoppable
